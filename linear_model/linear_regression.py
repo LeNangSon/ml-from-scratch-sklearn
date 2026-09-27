@@ -1,42 +1,45 @@
 from typing import Literal
 from _solvers import closed_form
+from _solvers import SGD, Batch_GD, Mini_Batch_GD
+from _losses import MSE
 import numpy as np
 
-class LinearRegression():
-    def __init__(self, 
-            solvers: Literal[
+
+Solvers = Literal[
             "closed_form",
             "batch_gd",
             "mini_batch_gd",
             "sgd"
-        ] = "closed_form",
+        ]
+
+class LinearRegression():
+    def __init__(self,  num_epochs = 1000, batch_size = 32,
+        solver: Solvers = "closed_form",
         learning_rate = 0.01):
+        self.num_epochs = num_epochs
         self.learning_rate = learning_rate
-        self.solvers = solvers
+        self.solver = solver
+        self.batch_size = batch_size
     def fit(self, X, y):
-        self.coef_ = np.zeros(X.shape[1])
-        self.intercept_ = 0
-        ones = np.ones(X.shape[0])
-        X_ones = np.c_[ones, X]
-        if self.solvers == "closed_form":
-            w = closed_form(X_ones, y)
-        elif self.solvers == "batch_gd":
-            print("ok")
-        elif self.solvers == "batch_gd":
-            ...
-        elif self.solvers == "mini_batch_gd":
-            ...
-        elif self.solvers == "sgd":
-            ...
-        else: print(f"Your solver {self.solvers} is not supported")
-        self.coef_ = w[1:]
-        self.intercept_ = w[0]
+        if self.solver == "closed_form":
+            w = closed_form(X, y)
+            self.coef_ = w[1:]
+            self.intercept_ = w[0]
+        else: 
+            loss = MSE()
+            if self.solver == "sgd":
+                self.coef_, self.intercept_ = SGD(X, y, self.num_epochs, self.learning_rate, loss)
+            elif self.solver == "batch_gd":
+                self.coef_, self.intercept_ = Batch_GD(X, y, self.num_epochs, self.learning_rate, loss)
+            elif self.solver == "mini_batch_gd":
+                self.coef_, self.intercept_ = Mini_Batch_GD(X, y, self.num_epochs, self.learning_rate, self.batch_size, loss)
+            else: raise ValueError(f"Solver {self.solver} is not supported")
         return self
     
     def predict(self, X):
         return X @ self.coef_ + self.intercept_
 
-    def score(self):
+    def score(self, X, y):
         ...
 
     

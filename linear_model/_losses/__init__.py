@@ -1,0 +1,1 @@
+from .squared_error import MSE
