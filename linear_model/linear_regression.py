@@ -1,6 +1,5 @@
 from typing import Literal
-from _solvers import closed_form
-from _solvers import SGD, Batch_GD, Mini_Batch_GD
+from _solvers import closed_form, SGD, Batch_GD, Mini_Batch_GD
 from _losses import MSE
 import numpy as np
 
@@ -42,5 +41,23 @@ class LinearRegression():
     def score(self, X, y):
         ...
 
-    
+if __name__ == "__main__":
+    model = LinearRegression()
+
+    X = np.array([
+    [1.0, 2.0],
+    [2.0, 1.0],
+    [2.5, 3.0],
+    [3.0, 2.5],
+    [4.0, 3.5],
+    [5.0, 4.0],
+    [6.0, 5.0],
+    [7.0, 4.5]
+    ])
+
+    y = np.array([12.15, 10.96, 18.19, 17.96, 22.43, 25.93, 31.47, 31.73])
+
+    model = model.fit(X,y)
+    print(model.coef_)
+    print(model.intercept_)
 
