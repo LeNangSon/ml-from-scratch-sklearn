@@ -2,7 +2,7 @@ from typing import Literal
 from _solvers import closed_form, SGD, Batch_GD, Mini_Batch_GD
 from _losses import MSE
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 Solvers = Literal[
             "closed_form",
@@ -27,7 +27,7 @@ class LinearRegression():
         else: 
             loss = MSE()
             if self.solver == "sgd":
-                self.coef_, self.intercept_ = SGD(X, y, self.num_epochs, self.learning_rate, loss)
+                self.coef_, self.intercept_, self.loss_history_ = SGD(X, y, self.num_epochs, self.learning_rate, loss)
             elif self.solver == "batch_gd":
                 self.coef_, self.intercept_ = Batch_GD(X, y, self.num_epochs, self.learning_rate, loss)
             elif self.solver == "mini_batch_gd":
@@ -42,22 +42,35 @@ class LinearRegression():
         ...
 
 if __name__ == "__main__":
-    model = LinearRegression()
 
     X = np.array([
-    [1.0, 2.0],
-    [2.0, 1.0],
-    [2.5, 3.0],
-    [3.0, 2.5],
-    [4.0, 3.5],
-    [5.0, 4.0],
-    [6.0, 5.0],
-    [7.0, 4.5]
+    [1.0],
+    [2.0],
+    [2.5],
+    [3.0],
+    [4.0],
+    [5.0],
+    [6.0],
+    [7.0]
     ])
-
     y = np.array([12.15, 10.96, 18.19, 17.96, 22.43, 25.93, 31.47, 31.73])
 
-    model = model.fit(X,y)
-    print(model.coef_)
-    print(model.intercept_)
+    learning_rates = [0.001, 0.003, 0.01, 0.03]
 
+    fig, axes = plt.subplots(2 , 2, sharex=True, sharey=True, figsize = (8,8))
+
+    axes = axes.flatten()
+
+    for ax, learning_rate in zip(axes, learning_rates):
+        num_epochs = 100
+        model = LinearRegression(solver="sgd", learning_rate=learning_rate, num_epochs=num_epochs)
+        model = model.fit(X, y)
+
+        ax.plot(range(num_epochs * X.shape[0]), model.loss_history_)
+        ax.set_title(f"lr: {learning_rate}\n"
+                      f"final loss: {model.loss_history_[-1]:.4f}")
+        ax.set_yscale("log")
+        ax.set_xlabel("epoch")
+        ax.set_ylabel("loss")
+    plt.tight_layout()
+    plt.show()

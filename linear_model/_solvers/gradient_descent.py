@@ -6,6 +6,8 @@ def SGD(X, y, num_epochs, learning_rate, loss, alpha = .0, beta = .0):
     w = np.zeros(X.shape[1])
     b = 0
 
+    losses = []
+
     for _ in range(num_epochs):
         shuffle = np.random.permutation(num_samples)
         X_shuffled = X[shuffle]
@@ -14,12 +16,14 @@ def SGD(X, y, num_epochs, learning_rate, loss, alpha = .0, beta = .0):
             X_i = X_shuffled[i: i+1]
             y_i = y_shuffled[i: i+1]
 
-            grad_w, grad_b = loss.gradient(X_i, w, b ,y_i, alpha, beta)
-
+            grad_w, grad_b = loss.gradient(X_i, w, b ,y_i)
+            
             w -= learning_rate * grad_w
             b -= learning_rate * grad_b
 
-    return w, b
+            losses.append(loss.value(X, w, b, y))
+
+    return w, b, losses
 
 def Batch_GD(X, y, num_epochs, learning_rate, loss, alpha = .0, beta = .0):
     w = np.zeros(X.shape[1])
