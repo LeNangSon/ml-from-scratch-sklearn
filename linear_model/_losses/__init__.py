@@ -1,1 +1,1 @@
-from .squared_error import MSE, RidgeLoss, LassoLoss
+from .squared_error import MSE, RidgeLoss, LassoLoss, ElasticLoss

@@ -1,10 +1,12 @@
 import numpy as np
 
-def SGD(X, y, num_epochs, learning_rate, loss, alpha = .0):
+def SGD(X, y, num_epochs, learning_rate, loss, alpha = .0, beta = .0):
     num_samples = X.shape[0]
 
     w = np.zeros(X.shape[1])
     b = 0
+
+    losses = []
 
     for _ in range(num_epochs):
         shuffle = np.random.permutation(num_samples)
@@ -14,25 +16,27 @@ def SGD(X, y, num_epochs, learning_rate, loss, alpha = .0):
             X_i = X_shuffled[i: i+1]
             y_i = y_shuffled[i: i+1]
 
-            grad_w, grad_b = loss.gradient(X_i, w, b ,y_i, alpha)
-
+            grad_w, grad_b = loss.gradient(X_i, w, b ,y_i)
+            
             w -= learning_rate * grad_w
             b -= learning_rate * grad_b
 
-    return w, b
+            losses.append(loss.value(X, w, b, y))
 
-def Batch_GD(X, y, num_epochs, learning_rate, loss, alpha = .0):
+    return w, b, losses
+
+def Batch_GD(X, y, num_epochs, learning_rate, loss, alpha = .0, beta = .0):
     w = np.zeros(X.shape[1])
     b = 0
 
     for _ in range(num_epochs):
-         grad_w, grad_b = loss.gradient(X, w, b ,y, alpha)
+         grad_w, grad_b = loss.gradient(X, w, b ,y, alpha, beta)
          
          w -= learning_rate * grad_w
          b -= learning_rate * grad_b
     return w, b
 
-def Mini_Batch_GD(X, y, num_epochs, learning_rate, batch_size, loss, alpha=.0):
+def Mini_Batch_GD(X, y, num_epochs, learning_rate, batch_size, loss, alpha=.0, beta = .0):
     num_samples = X.shape[0] 
     num_batches = (num_samples - 1) // batch_size + 1
     
@@ -50,7 +54,7 @@ def Mini_Batch_GD(X, y, num_epochs, learning_rate, batch_size, loss, alpha=.0):
             X_i = X_shuffled[start: end]
             y_i = y_shuffled[start: end]
 
-            grad_w, grad_b = loss.gradient(X_i, w, b, y_i, alpha)
+            grad_w, grad_b = loss.gradient(X_i, w, b, y_i, alpha, beta)
 
             w -= learning_rate * grad_w
             b -= learning_rate * grad_b
