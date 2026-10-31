@@ -29,9 +29,9 @@ class LinearRegression():
             if self.solver == "sgd":
                 self.coef_, self.intercept_, self.loss_history_ = SGD(X, y, self.num_epochs, self.learning_rate, loss)
             elif self.solver == "batch_gd":
-                self.coef_, self.intercept_ = Batch_GD(X, y, self.num_epochs, self.learning_rate, loss)
+                self.coef_, self.intercept_, self.loss_history_ = Batch_GD(X, y, self.num_epochs, self.learning_rate, loss)
             elif self.solver == "mini_batch_gd":
-                self.coef_, self.intercept_ = Mini_Batch_GD(X, y, self.num_epochs, self.learning_rate, self.batch_size, loss)
+                self.coef_, self.intercept_, self.loss_history_ = Mini_Batch_GD(X, y, self.num_epochs, self.learning_rate, self.batch_size, loss)
             else: raise ValueError(f"Solver {self.solver} is not supported")
         return self
     

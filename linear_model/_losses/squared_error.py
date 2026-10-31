@@ -1,17 +1,16 @@
 import numpy as np
 
 class MSE():
-    def value(self, X, w, b ,y):
-        m = X.shape[0]
-        return 1 / (2*m) * np.sum((X @ w - y + b) ** 2)
+    def value(self, y_hat ,y):
+        m = y.shape[0]
+        return 1 / (2*m) * np.sum((y_hat - y) ** 2)
 
-    def gradient(self, X, w, b, y):
-        m = X.shape[0]
-        y_hat = X @ w + b
-        grad_w = 1 / m * X.T @ (y_hat - y)
-        grad_b = 1 / m * np.sum(y_hat - y)
-        return grad_w, grad_b
+    def gradient(self, y_hat, y):
+        m = y.shape[0]
+        grad_pred = 1 / m  * (y_hat - y)
+        return grad_pred
 
+# .........
 class RidgeLoss():
     def value(self, X, w, b ,y, alpha):
         m = X.shape[0]
